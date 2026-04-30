@@ -4,58 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BTEK.FM // PROJECT SPEAKEASY</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="scanlines"></div>
-    <div class="crt-glow"></div>
+    <div class="crt">
+        <pre id="terminal">
+<span class="gold">                  .ed"""" """$$$$be.                     
+                -"           ^""**$$$e.                  
+              ."                   '$$$c                 
+             /                      "4$$b                
+            d  3                      $$$$               
+            $  *                   .$$$$$$               
+           .$  ^c           $$$$$e$$$$$$$$.              
+           d$L  4.         4$$$$$$$$$$$$$$b              
+           $$$$b ^ceeeee.  4$$ECL.F*$$$$$$$              
+e$""=.     $$$$P d$$$$F $ $$$$$$$$$- $$$$$$              
+z$$b. ^c     3$$$F "$$$$b   $"$$$$$$$  $$$$*"      .=""$c 
+4$$$$L        $$P"  "$$b   .$ $$$$$...e$$        .=  e$$$.
+^*$$$$$c  %..   *c    ..    $$ 3$$$$$$$$$$eF     zP  d$$$$$
+  "**$$$ec   "   %ce""    $$$  $$$$$$$$$$*    .r" =$$$$P""
+        "*$b.  "c  *$e.    *** d$$$$$"L$$    .d"  e$$***"
+          ^*$$c ^$c $$$      4J$$$$$% $$$ .e*".eeP"      
+             "$$$$$$$"'$=e....$*$$**$cz$$" "..d$*"       
+               "*$$$  *=%4.$ L L$ P3$$$F $$$P"           
+                  "$   "%*ebJLzb$e$$$$$b $P"             
+                    %..      4$$$$$$$$$$ "               
+                     $$$e   z$$$$$$$$$$%                 
+                      "*$c  "$$$$$$$$$"                  
+                       ."""*$$$$$$$$"                    </span>
 
-    <pre id="terminal">
-    <span class="accent-gold">
-         _.-'''''-._
-       .'  _     _  '.
-      /   (o)   (o)   \
-     |                 |
-     |  \           /  |
-      \  '.       .'  /
-       '.  '-----'  .'
-         '-._____.-'
-           /|   |\
-          /_|___|_\
-    </span>
-    <span class="accent-red"> [!] BTEK.FM // SOVEREIGN_NODE_ESTABLISHED [!] </span>
+BTEK.FM // PROJECT SPEAKEASY V.01 // UNAUTHORIZED ACCESS DETECTED
 
-+-------------------------------------------------------------+
-| [ROOM_MAPPING]                                              |
-|                                                             |
-|  [1] <span class="zone-btn" data-zone="main">DANCE_FLOOR</span> _________________________________  |
-|      [# # # # # # # # # # # # # # # # # # # # # #]  |
-|      [# # # # # # # # # # # # # # # # # # # # # #]  |
-|                                                             |
-|  [2] <span class="zone-btn" data-zone="booth">PRIVATE_BOOTH</span> _________    [3] <span class="zone-btn" data-zone="bar">THE_BAR</span> _________  |
-|      [X X X X X X X]           [= = = = = = =]      |
-|      [ENCRYPTED_CH]            [OPEN_SIGNAL__]      |
-|                                                             |
-+-------------------------------------------------------------+
-| [TERMINAL_OUTPUT]                                           |
-| <div id="log-window"><span id="status-log">> INITIALIZING SPEAKEASY PROTOCOL...
-> SCANNING FOR ACTIVE UNITS...</span></div> |
-+-------------------------------------------------------------+
-| [COMMS]                                                     |
-|                                                             |
-|  UNIT_ID: <span id="peer-id" class="accent-gold">SCANNING...</span>                               |
-|  DIAL:    [<input type="text" id="dial-id" placeholder="ID">] <button id="dial-btn">LINK</button>             |
-|  MESSAGE: [<input type="text" id="chat-input" placeholder="ENTER SIGNAL...">]         |
-|                                                             |
-+-------------------------------------------------------------+
-| [SIGNAL_CONTROL]                                            |
-|                                                             |
-|  MASTER_GAIN: [<input type="range" id="master-vol" value="50">]                      |
-|  STATUS: <span id="playback-status">SILENT</span>                                       |
-|  <button id="ignite-signal" class="ignite-btn">[ IGNITE_SIGNAL ]</button>                   |
-|                                                             |
-+-------------------------------------------------------------+
-    </pre>
+<span class="dim">================================================================================</span>
+<span class="gold">COMMAND CENTER</span>                                  <span class="gold">NETWORK STATUS</span>
+> LOCATION: <button class="zone-btn active" data-zone="main">[ MAIN_FLOOR ]</button>                      > SIGNAL: <span id="playback-status" class="red">OFFLINE</span>
+> LOCATION: <button class="zone-btn" data-zone="booth">[ THE_BOOTH ]</button>                       > PEER_ID: <span id="peer-id" class="dim">AWAITING IGNITION...</span>
+> LOCATION: <button class="zone-btn" data-zone="void">[ THE_VOID ]</button>                        > ACTIVE_UNITS: <span id="unit-count">0</span>
+
+> AUDIO_SYS: <button id="ignite-signal" class="action-btn">[ INITIALIZE_SIGNAL ]</button>
+
+<span class="dim">================================================================================</span>
+<span class="gold">COMMUNICATIONS PROTOCOL</span>
+> DIAL_NODE: [<input type="text" id="dial-id" class="term-input" maxlength="20" placeholder="ENTER PEER ID">] <button id="dial-btn" class="action-btn">[LINK]</button>
+> BROADCAST: [<input type="text" id="chat-input" class="term-input wide" maxlength="50" placeholder="AWAITING COMMS...">]
+
+<span class="dim">================================================================================</span>
+<span class="gold">TERMINAL LOG</span>
+<div id="log-window" class="log-scroll">
+<span class="dim">> SYSTEM BOOT SEQUENCE INITIATED...</span>
+<span class="dim">> WAITING FOR SOVEREIGN NODE IGNITION.</span>
+</div><span class="dim">================================================================================</span>
+        </pre>
+    </div>
 
     <div id="audio-container" style="display:none;">
         <audio id="ambient-loop" loop>

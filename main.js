@@ -1,16 +1,15 @@
 /**
  * 📡 BTEK.FM // PROJECT SPEAKEASY
- * FUNCTIONAL CORE V.02 // STRICT TERMINAL EDITION
+ * FUNCTIONAL CORE V.03 // PURE TERMINAL
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const igniteBtn = document.getElementById('ignite-signal');
     const playbackStatus = document.getElementById('playback-status');
     const peerDisplay = document.getElementById('peer-id');
-    const statusLog = document.getElementById('status-log');
     const logWindow = document.getElementById('log-window');
+    const unitCount = document.getElementById('unit-count');
     
-    const masterVol = document.getElementById('master-vol');
     const ambientLoop = document.getElementById('ambient-loop');
     
     const dialIdInput = document.getElementById('dial-id');
@@ -23,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let peer = null;
     let connections = {};
     let currentZone = 'main';
+    let connectedPeers = new Set();
 
     // --- 1. PEERJS INIT ---
     function initPeer() {
@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         peer.on('open', (id) => {
             peerDisplay.textContent = id;
+            peerDisplay.classList.remove('dim');
+            peerDisplay.classList.add('gold');
             updateLog(`UNIT_ID_SECURED: ${id}`);
         });
 
@@ -48,8 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupDataConnection(conn) {
         connections[conn.peer] = conn;
+        connectedPeers.add(conn.peer);
+        updateUnitCount();
+        
         conn.on('data', (data) => {
             updateLog(`[${conn.peer}] ${data}`);
+        });
+        
+        conn.on('close', () => {
+            connectedPeers.delete(conn.peer);
+            delete connections[conn.peer];
+            updateUnitCount();
+            updateLog(`DATA_LINK_LOST: ${conn.peer}`);
         });
     }
 
@@ -59,14 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
             localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
             updateLog(`MIC_CAPTURED // PIRATE_PROTOCOL: ON`);
 
-            ambientLoop.volume = masterVol.value / 100;
+            ambientLoop.volume = 0.5;
             ambientLoop.play();
             
             isSignalActive = true;
             igniteBtn.textContent = '[ TERMINATE_SIGNAL ]';
-            igniteBtn.classList.add('accent-red');
-            playbackStatus.textContent = 'BROADCASTING';
+            igniteBtn.classList.add('red');
+            playbackStatus.textContent = 'ACTIVE';
+            playbackStatus.classList.remove('red');
+            playbackStatus.classList.add('gold');
             updateLog(`AMBIENT_SYNC: COMPLETE`);
+            
+            if(!peer) initPeer();
         } catch (err) {
             updateLog(`ACCESS_DENIED: MIC_REQUIRED`);
         }
@@ -76,9 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (localStream) localStream.getTracks().forEach(t => t.stop());
         ambientLoop.pause();
         isSignalActive = false;
-        igniteBtn.textContent = '[ IGNITE_SIGNAL ]';
-        igniteBtn.classList.remove('accent-red');
-        playbackStatus.textContent = 'SILENT';
+        igniteBtn.textContent = '[ INITIALIZE_SIGNAL ]';
+        igniteBtn.classList.remove('red');
+        playbackStatus.textContent = 'OFFLINE';
+        playbackStatus.classList.remove('gold');
+        playbackStatus.classList.add('red');
         updateLog(`SIGNAL_TERMINATED`);
     }
 
@@ -99,33 +117,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dialBtn.addEventListener('click', () => {
         const id = dialIdInput.value.trim();
-        if (id) {
+        if (id && peer) {
             updateLog(`ATTEMPTING_LINK: ${id}`);
             const conn = peer.connect(id);
             setupDataConnection(conn);
-            if (localStream) peer.call(id, localStream);
+            if (localStream) {
+                const call = peer.call(id, localStream);
+                handleVoiceStream(call);
+            }
+            dialIdInput.value = '';
         }
     });
 
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             const msg = chatInput.value.trim();
-            if (msg) {
+            if (msg && Object.keys(connections).length > 0) {
                 Object.values(connections).forEach(c => c.open && c.send(msg));
                 updateLog(`[YOU] ${msg}`);
+                chatInput.value = '';
+            } else if (msg) {
+                updateLog(`[SYSTEM] NO_ACTIVE_LINKS_TO_BROADCAST`);
                 chatInput.value = '';
             }
         }
     });
 
-    masterVol.addEventListener('input', (e) => {
-        ambientLoop.volume = e.target.value / 100;
-    });
-
     function updateLog(msg) {
-        statusLog.textContent += `\n> ${msg}`;
+        const entry = document.createElement('div');
+        entry.textContent = `> ${msg}`;
+        logWindow.appendChild(entry);
         logWindow.scrollTop = logWindow.scrollHeight;
     }
+    
+    function updateUnitCount() {
+        unitCount.textContent = connectedPeers.size;
+    }
 
-    initPeer();
+    function handleVoiceStream(call) {
+        call.on('stream', (remoteStream) => {
+            const audio = document.createElement('audio');
+            audio.srcObject = remoteStream;
+            audio.play();
+            updateLog(`VOICE_SYNCED: ${call.peer}`);
+            connectedPeers.add(call.peer);
+            updateUnitCount();
+        });
+        
+        call.on('close', () => {
+             updateLog(`VOICE_LINK_LOST: ${call.peer}`);
+        });
+    }
 });
