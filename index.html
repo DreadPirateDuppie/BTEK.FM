@@ -7,63 +7,56 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<pre id="speakeasy-node">
-+-------------------------------------------------------------------------+
-|                                                                         |
-|   ██████╗ ████████╗███████╗██╗  ██╗    ███████╗███╗   ███╗              |
-|   ██╔══██╗╚══██╔══╝██╔════╝██║ ██╔╝    ██╔════╝████╗ ████║              |
-|   ██████╔╝   ██║   █████╗  █████╔╝     █████╗  ██╔████╔██║              |
-|   ██╔══██╗   ██║   ██╔══╝  ██╔═██╗     ██╔══╝  ██║╚██╔╝██║              |
-|   ██████╔╝   ██║   ███████╗██║  ██╗    ██║     ██║ ╚═╝ ██║              |
-|   ╚═════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝     ╚═╝              |
-|                                                                         |
-|   [BTEK.FM // PROJECT SPEAKEASY V.01] // [NIGHT_CLUB_MODE: ACTIVE]      |
-+-------------------------------------------------------------------------+
-| [SKULL_SIGNAL]                                                          |
-|                                                                         |
-|  <span class="skull">      .uX@Xh.                                     _                </span>  |
-|  <span class="skull">     'X@@@@@X`                                   / \               </span>  |
-|  <span class="skull">      `X@@@@X'                                  | o |   [88.1 MHz] </span>  |
-|  <span class="skull">   .   `X@@X'   .                                 \_/               </span>  |
-|  <span class="skull">  'Xh.  :X@:  .hX'                                                  </span>  |
-|  <span class="skull">   `X@h. `X' .h@X'         [SOVEREIGN_NODE_ESTABLISHED]            </span>  |
-|  <span class="skull">     `X@h. .h@X'           [PIRATE_ENCRYPTION: ENABLED]            </span>  |
-|  <span class="skull">       `X@h@X'                                                     </span>  |
-|  <span class="skull">         `X'                                                       </span>  |
-|                                                                         |
-+-------------------------------------------------------------------------+
-| [TERMINAL_LOG]                                                          |
-| <div id="status-log-container" style="height: 150px; overflow-y: auto;"><span id="status-log">> AUTHENTICATING SOVEREIGN NODE...
-> SIGNAL STRENGTH: OPTIMAL
-> BAR_STATUS: OPEN</span></div>                                               |
-+-------------------------------------------------------------------------+
-| [ACTIVE_UNITS]                                                          |
-| <span id="unit-list">> _awaiting_signal...</span>                                                   |
-+-------------------------------------------------------------------------+
-| [CONTROLS]                                                              |
-|                                                                         |
-|  TARGET_ZONE: <select id="zone-select">
-|                <option value="main">DANCE_FLOOR</option>
-|                <option value="booth">THE_BOOTH (PRIVATE)</option>
-|                <option value="bar">THE_BAR</option>
-|               </select>                                                 |
-|                                                                         |
-|  MASTER_VOL:  [<input type="range" id="master-vol" min="0" max="100" value="50">] |
-|                                                                         |
-|  DIAL_UNIT:   [<input type="text" id="dial-id" placeholder="UNIT_ID">] <button id="dial-btn">CONNECT</button> |
-|  MESSAGE:     [<input type="text" id="chat-input" placeholder="ENTER_COMMS..." style="width: 300px;">] |
-|                                                                         |
-+-------------------------------------------------------------------------+
-| [AUDIO_ENGINE]                                                          |
-|                                                                         |
-|  <button id="ignite-signal">IGNITE_SIGNAL</button>                                             |
-|  STATUS: <span id="playback-status">SIGNAL: SILENT</span>                                          |
-|  PEER_ID: <span id="peer-display" class="accent">SCANNING...</span>                                     |
-|                                                                         |
-+-------------------------------------------------------------------------+
-</pre>
+    <div class="scanlines"></div>
+    <div class="crt-glow"></div>
 
-    <!-- Invisible Audio Container -->
+    <pre id="terminal">
+    <span class="accent-gold">
+         _.-'''''-._
+       .'  _     _  '.
+      /   (o)   (o)   \
+     |                 |
+     |  \           /  |
+      \  '.       .'  /
+       '.  '-----'  .'
+         '-._____.-'
+           /|   |\
+          /_|___|_\
+    </span>
+    <span class="accent-red"> [!] BTEK.FM // SOVEREIGN_NODE_ESTABLISHED [!] </span>
+
++-------------------------------------------------------------+
+| [ROOM_MAPPING]                                              |
+|                                                             |
+|  [1] <span class="zone-btn" data-zone="main">DANCE_FLOOR</span> _________________________________  |
+|      [# # # # # # # # # # # # # # # # # # # # # #]  |
+|      [# # # # # # # # # # # # # # # # # # # # # #]  |
+|                                                             |
+|  [2] <span class="zone-btn" data-zone="booth">PRIVATE_BOOTH</span> _________    [3] <span class="zone-btn" data-zone="bar">THE_BAR</span> _________  |
+|      [X X X X X X X]           [= = = = = = =]      |
+|      [ENCRYPTED_CH]            [OPEN_SIGNAL__]      |
+|                                                             |
++-------------------------------------------------------------+
+| [TERMINAL_OUTPUT]                                           |
+| <div id="log-window"><span id="status-log">> INITIALIZING SPEAKEASY PROTOCOL...
+> SCANNING FOR ACTIVE UNITS...</span></div> |
++-------------------------------------------------------------+
+| [COMMS]                                                     |
+|                                                             |
+|  UNIT_ID: <span id="peer-id" class="accent-gold">SCANNING...</span>                               |
+|  DIAL:    [<input type="text" id="dial-id" placeholder="ID">] <button id="dial-btn">LINK</button>             |
+|  MESSAGE: [<input type="text" id="chat-input" placeholder="ENTER SIGNAL...">]         |
+|                                                             |
++-------------------------------------------------------------+
+| [SIGNAL_CONTROL]                                            |
+|                                                             |
+|  MASTER_GAIN: [<input type="range" id="master-vol" value="50">]                      |
+|  STATUS: <span id="playback-status">SILENT</span>                                       |
+|  <button id="ignite-signal" class="ignite-btn">[ IGNITE_SIGNAL ]</button>                   |
+|                                                             |
++-------------------------------------------------------------+
+    </pre>
+
     <div id="audio-container" style="display:none;">
         <audio id="ambient-loop" loop>
             <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">

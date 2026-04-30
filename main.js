@@ -1,53 +1,48 @@
 /**
  * 📡 BTEK.FM // PROJECT SPEAKEASY
- * FUNCTIONAL CORE V.01 // PIRATE EDITION
+ * FUNCTIONAL CORE V.02 // STRICT TERMINAL EDITION
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const igniteBtn = document.getElementById('ignite-signal');
     const playbackStatus = document.getElementById('playback-status');
-    const peerDisplay = document.getElementById('peer-display');
-    const unitList = document.getElementById('unit-list');
+    const peerDisplay = document.getElementById('peer-id');
     const statusLog = document.getElementById('status-log');
+    const logWindow = document.getElementById('log-window');
     
     const masterVol = document.getElementById('master-vol');
-    const zoneSelect = document.getElementById('zone-select');
     const ambientLoop = document.getElementById('ambient-loop');
     
     const dialIdInput = document.getElementById('dial-id');
     const dialBtn = document.getElementById('dial-btn');
     const chatInput = document.getElementById('chat-input');
+    const zoneBtns = document.querySelectorAll('.zone-btn');
 
     let localStream = null;
     let isSignalActive = false;
     let peer = null;
-    let connections = {}; // Store active data connections
+    let connections = {};
+    let currentZone = 'main';
 
-    // --- 1. INITIALIZE SOVEREIGN PEER ---
+    // --- 1. PEERJS INIT ---
     function initPeer() {
         const uniqueId = `btek_unit_${Math.floor(Math.random() * 8888)}`;
         peer = new Peer(uniqueId, { debug: 2 });
 
         peer.on('open', (id) => {
             peerDisplay.textContent = id;
-            updateLog(`[SYSTEM] UNIT_ID: ${id}\n> CONNECTION_ESTABLISHED`);
-            addUnitToLobby(id, true);
+            updateLog(`UNIT_ID_SECURED: ${id}`);
         });
 
-        // Handle Incoming Connections
         peer.on('connection', (conn) => {
             setupDataConnection(conn);
-            updateLog(`[SYSTEM] DATA_LINK_SYNCED: ${conn.peer}`);
+            updateLog(`DATA_LINK_ESTABLISHED: ${conn.peer}`);
         });
 
         peer.on('call', (call) => {
-            updateLog(`[SYSTEM] INCOMING_VOICE_DETECTED...`);
+            updateLog(`INCOMING_VOICE_LINK...`);
             call.answer(localStream);
             handleVoiceStream(call);
-        });
-
-        peer.on('error', (err) => {
-            updateLog(`[SYSTEM] ERROR: ${err.type.toUpperCase()}`);
         });
     }
 
@@ -56,70 +51,47 @@ document.addEventListener('DOMContentLoaded', () => {
         conn.on('data', (data) => {
             updateLog(`[${conn.peer}] ${data}`);
         });
-        addUnitToLobby(conn.peer);
     }
 
-    // --- 2. AUDIO ENGINE ---
+    // --- 2. AUDIO LOGIC ---
     async function igniteSignal() {
         try {
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            updateLog(`[SYSTEM] MIC_CAPTURED // PIRATE_PROTOCOL_ACTIVE`);
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            updateLog(`MIC_CAPTURED // PIRATE_PROTOCOL: ON`);
 
             ambientLoop.volume = masterVol.value / 100;
             ambientLoop.play();
             
             isSignalActive = true;
-            igniteBtn.textContent = 'TERMINATE_SIGNAL';
-            igniteBtn.style.color = '#FF0000';
-            playbackStatus.textContent = 'SIGNAL: BROADCASTING';
-            updateLog(`[SYSTEM] AMBIENT_SYNC: COMPLETED`);
+            igniteBtn.textContent = '[ TERMINATE_SIGNAL ]';
+            igniteBtn.classList.add('accent-red');
+            playbackStatus.textContent = 'BROADCASTING';
+            updateLog(`AMBIENT_SYNC: COMPLETE`);
         } catch (err) {
-            updateLog(`[SYSTEM] ACCESS_DENIED: MIC_REQUIRED_FOR_VOICE`);
+            updateLog(`ACCESS_DENIED: MIC_REQUIRED`);
         }
     }
 
     function terminateSignal() {
-        if (localStream) localStream.getTracks().forEach(track => track.stop());
+        if (localStream) localStream.getTracks().forEach(t => t.stop());
         ambientLoop.pause();
         isSignalActive = false;
-        igniteBtn.textContent = 'IGNITE_SIGNAL';
-        igniteBtn.style.color = '#FFD700';
-        playbackStatus.textContent = 'SIGNAL: SILENT';
-        updateLog(`[SYSTEM] SIGNAL_TERMINATED`);
+        igniteBtn.textContent = '[ IGNITE_SIGNAL ]';
+        igniteBtn.classList.remove('accent-red');
+        playbackStatus.textContent = 'SILENT';
+        updateLog(`SIGNAL_TERMINATED`);
     }
 
-    // --- 3. COMMUNICATIONS ---
-    function connectToUnit(targetId) {
-        updateLog(`[SYSTEM] ATTEMPTING_LINK: ${targetId}`);
-        
-        // 1. Data Link (Chat)
-        const conn = peer.connect(targetId);
-        setupDataConnection(conn);
-
-        // 2. Voice Link (If signal ignited)
-        if (localStream) {
-            const call = peer.call(targetId, localStream);
-            handleVoiceStream(call);
-        }
-    }
-
-    function handleVoiceStream(call) {
-        call.on('stream', (remoteStream) => {
-            const audio = document.createElement('audio');
-            audio.srcObject = remoteStream;
-            audio.play();
-            updateLog(`[SYSTEM] VOICE_SYNCED: ${call.peer}`);
+    // --- 3. UI HANDLERS ---
+    zoneBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            zoneBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentZone = btn.dataset.zone;
+            updateLog(`RE-ROUTING_TO_ZONE: ${currentZone.toUpperCase()}`);
         });
-    }
+    });
 
-    function broadcastMessage(msg) {
-        Object.values(connections).forEach(conn => {
-            if (conn.open) conn.send(msg);
-        });
-        updateLog(`[YOU] ${msg}`);
-    }
-
-    // --- 4. UI HANDLERS ---
     igniteBtn.addEventListener('click', () => {
         if (!isSignalActive) igniteSignal();
         else terminateSignal();
@@ -127,14 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dialBtn.addEventListener('click', () => {
         const id = dialIdInput.value.trim();
-        if (id) connectToUnit(id);
+        if (id) {
+            updateLog(`ATTEMPTING_LINK: ${id}`);
+            const conn = peer.connect(id);
+            setupDataConnection(conn);
+            if (localStream) peer.call(id, localStream);
+        }
     });
 
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             const msg = chatInput.value.trim();
             if (msg) {
-                broadcastMessage(msg);
+                Object.values(connections).forEach(c => c.open && c.send(msg));
+                updateLog(`[YOU] ${msg}`);
                 chatInput.value = '';
             }
         }
@@ -144,20 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ambientLoop.volume = e.target.value / 100;
     });
 
-    zoneSelect.addEventListener('change', (e) => {
-        updateLog(`[SYSTEM] RE-ROUTING TO ZONE: ${e.target.value.toUpperCase()}`);
-    });
-
     function updateLog(msg) {
         statusLog.textContent += `\n> ${msg}`;
-        const container = document.getElementById('status-log-container');
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function addUnitToLobby(id, isSelf = false) {
-        const li = document.createElement('li');
-        li.textContent = ` ${id}${isSelf ? ' (HOST)' : ''}`;
-        unitList.appendChild(li);
+        logWindow.scrollTop = logWindow.scrollHeight;
     }
 
     initPeer();
