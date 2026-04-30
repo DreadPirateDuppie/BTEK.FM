@@ -1,0 +1,108 @@
+/* 📡 BTEK.FM // TERMINAL BRUTALISM STYLESHEET */
+
+:root {
+    --bg-color: #000000;
+    --text-color: #FFFFFF;
+    --accent-color: #FFD700; /* STARK GOLD */
+    --font-mono: 'Courier New', Courier, monospace;
+}
+
+* {
+    box-sizing: border-box;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-mono);
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+#terminal {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.ascii-art {
+    color: var(--accent-color);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+#status-log {
+    font-size: 0.9em;
+    color: #00FF00; /* CLASSIC TERMINAL GREEN */
+    margin: 10px 0;
+    white-space: pre-line;
+}
+
+.stark-divider {
+    border: none;
+    border-top: 2px solid var(--text-color);
+    margin: 20px 0;
+}
+
+section h3 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+#unit-list {
+    list-style: none;
+    padding: 0;
+}
+
+#unit-list li::before {
+    content: "> ";
+}
+
+.control-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select, input[type="range"] {
+    background-color: var(--bg-color);
+    border: 1px solid var(--text-color);
+    padding: 5px;
+    outline: none;
+}
+
+select:focus {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+button {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: var(--text-color);
+}
+
+.ascii-footer {
+    margin-top: 40px;
+    text-align: center;
+    color: var(--accent-color);
+}

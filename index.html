@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTEK.FM // PROJECT SPEAKEASY</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="terminal">
+        <pre class="ascii-art">
+██████╗ ████████╗███████╗██╗  ██╗    ███████╗███╗   ███╗
+██╔══██╗╚══██╔══╝██╔════╝██║ ██╔╝    ██╔════╝████╗ ████║
+██████╔╝   ██║   █████╗  █████╔╝     █████╗  ██╔████╔██║
+██╔══██╗   ██║   ██╔══╝  ██╔═██╗     ██╔══╝  ██║╚██╔╝██║
+██████╔╝   ██║   ███████╗██║  ██╗    ██║     ██║ ╚═╝ ██║
+╚═════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝     ╚═╝
+        </pre>
+        
+        <div id="status-log">
+            [SYSTEM] btek.fm // PROJECT SPEAKEASY V.01
+            [SYSTEM] AUTHENTICATING SOVEREIGN NODE...
+            [SYSTEM] SIGNAL STRENGTH: OPTIMAL
+        </div>
+
+        <hr class="stark-divider">
+
+        <section id="presence-lobby">
+            <h3>[ACTIVE_UNITS_IN_NODE]</h3>
+            <ul id="unit-list">
+                <li>_dread_pirate_duppie (HOST)</li>
+                <li>_awaiting_signal...</li>
+            </ul>
+        </section>
+
+        <hr class="stark-divider">
+
+        <section id="controls">
+            <div class="control-group">
+                <label for="zone-select">[TARGET_ZONE]</label>
+                <select id="zone-select">
+                    <option value="main">MAIN_FLOOR</option>
+                    <option value="booth">THE_BOOTH (ENCRYPTED)</option>
+                    <option value="void">THE_VOID</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="master-vol">[MASTER_VOLUME]</label>
+                <input type="range" id="master-vol" min="0" max="100" value="50">
+            </div>
+
+            <div class="control-group">
+                <label for="voice-vol">[VOICE_COMMS_MIX]</label>
+                <input type="range" id="voice-vol" min="0" max="100" value="50">
+            </div>
+        </section>
+
+        <hr class="stark-divider">
+
+        <section id="audio-engine">
+            <button id="ignite-signal">IGNITE_SIGNAL</button>
+            <div id="playback-status">SIGNAL: SILENT</div>
+        </section>
+
+        <pre class="ascii-footer">
+      _
+     / \
+    | o |   [BTEK.FM // 88.1 MHz]
+     \_/
+        </pre>
+    </div>
+
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
