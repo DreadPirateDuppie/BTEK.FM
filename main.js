@@ -11,16 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusLog = document.getElementById('status-log');
     
     const masterVol = document.getElementById('master-vol');
-    const voiceVol = document.getElementById('voice-vol');
     const zoneSelect = document.getElementById('zone-select');
     const ambientLoop = document.getElementById('ambient-loop');
     
     const dialIdInput = document.getElementById('dial-id');
     const dialBtn = document.getElementById('dial-btn');
+    const chatInput = document.getElementById('chat-input');
 
     let localStream = null;
     let isSignalActive = false;
     let peer = null;
+    let connections = {}; // Store active data connections
 
     // --- 1. INITIALIZE SOVEREIGN PEER ---
     function initPeer() {
@@ -33,10 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
             addUnitToLobby(id, true);
         });
 
+        // Handle Incoming Connections
+        peer.on('connection', (conn) => {
+            setupDataConnection(conn);
+            updateLog(`[SYSTEM] DATA_LINK_SYNCED: ${conn.peer}`);
+        });
+
         peer.on('call', (call) => {
-            updateLog(`[SYSTEM] INCOMING_SIGNAL_DETECTED...`);
-            call.answer(localStream); // Answer with our mic stream
-            handleCall(call);
+            updateLog(`[SYSTEM] INCOMING_VOICE_DETECTED...`);
+            call.answer(localStream);
+            handleVoiceStream(call);
         });
 
         peer.on('error', (err) => {
@@ -44,14 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. AUDIO ENGINE & MIXING ---
+    function setupDataConnection(conn) {
+        connections[conn.peer] = conn;
+        conn.on('data', (data) => {
+            updateLog(`[${conn.peer}] ${data}`);
+        });
+        addUnitToLobby(conn.peer);
+    }
+
+    // --- 2. AUDIO ENGINE ---
     async function igniteSignal() {
         try {
-            // Request Microphone
             localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
             updateLog(`[SYSTEM] MIC_CAPTURED // PIRATE_PROTOCOL_ACTIVE`);
 
-            // Start Ambient Loop
             ambientLoop.volume = masterVol.value / 100;
             ambientLoop.play();
             
@@ -59,47 +72,51 @@ document.addEventListener('DOMContentLoaded', () => {
             igniteBtn.textContent = 'TERMINATE_SIGNAL';
             igniteBtn.style.color = '#FF0000';
             playbackStatus.textContent = 'SIGNAL: BROADCASTING';
-            
             updateLog(`[SYSTEM] AMBIENT_SYNC: COMPLETED`);
-
         } catch (err) {
-            updateLog(`[SYSTEM] ACCESS_DENIED: MIC_REQUIRED_FOR_SIGNAL`);
-            console.error(err);
+            updateLog(`[SYSTEM] ACCESS_DENIED: MIC_REQUIRED_FOR_VOICE`);
         }
     }
 
     function terminateSignal() {
-        if (localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-        }
+        if (localStream) localStream.getTracks().forEach(track => track.stop());
         ambientLoop.pause();
         isSignalActive = false;
         igniteBtn.textContent = 'IGNITE_SIGNAL';
         igniteBtn.style.color = '#FFD700';
         playbackStatus.textContent = 'SIGNAL: SILENT';
-        updateLog(`[SYSTEM] SIGNAL_TERMINATED // NODE_OFFLINE`);
+        updateLog(`[SYSTEM] SIGNAL_TERMINATED`);
     }
 
-    // --- 3. COMMUNICATIONS (DIALING) ---
-    function dialUnit(targetId) {
-        if (!localStream) {
-            updateLog(`[SYSTEM] ERROR: MUST_IGNITE_SIGNAL_BEFORE_DIAL`);
-            return;
+    // --- 3. COMMUNICATIONS ---
+    function connectToUnit(targetId) {
+        updateLog(`[SYSTEM] ATTEMPTING_LINK: ${targetId}`);
+        
+        // 1. Data Link (Chat)
+        const conn = peer.connect(targetId);
+        setupDataConnection(conn);
+
+        // 2. Voice Link (If signal ignited)
+        if (localStream) {
+            const call = peer.call(targetId, localStream);
+            handleVoiceStream(call);
         }
-        updateLog(`[SYSTEM] ATTEMPTING_CONNECTION: ${targetId}`);
-        const call = peer.call(targetId, localStream);
-        handleCall(call);
     }
 
-    function handleCall(call) {
+    function handleVoiceStream(call) {
         call.on('stream', (remoteStream) => {
             const audio = document.createElement('audio');
             audio.srcObject = remoteStream;
-            audio.volume = voiceVol.value / 100;
             audio.play();
-            updateLog(`[SYSTEM] AUDIO_LINK_SYNCED: ${call.peer}`);
-            addUnitToLobby(call.peer);
+            updateLog(`[SYSTEM] VOICE_SYNCED: ${call.peer}`);
         });
+    }
+
+    function broadcastMessage(msg) {
+        Object.values(connections).forEach(conn => {
+            if (conn.open) conn.send(msg);
+        });
+        updateLog(`[YOU] ${msg}`);
     }
 
     // --- 4. UI HANDLERS ---
@@ -110,7 +127,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dialBtn.addEventListener('click', () => {
         const id = dialIdInput.value.trim();
-        if (id) dialUnit(id);
+        if (id) connectToUnit(id);
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const msg = chatInput.value.trim();
+            if (msg) {
+                broadcastMessage(msg);
+                chatInput.value = '';
+            }
+        }
     });
 
     masterVol.addEventListener('input', (e) => {
@@ -123,6 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateLog(msg) {
         statusLog.textContent += `\n> ${msg}`;
+        const container = document.getElementById('status-log-container');
+        container.scrollTop = container.scrollHeight;
     }
 
     function addUnitToLobby(id, isSelf = false) {
@@ -131,6 +160,5 @@ document.addEventListener('DOMContentLoaded', () => {
         unitList.appendChild(li);
     }
 
-    // Start Peer on load
     initPeer();
 });

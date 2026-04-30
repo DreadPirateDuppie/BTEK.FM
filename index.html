@@ -32,10 +32,10 @@
 |  <span class="skull">         `X'                                                       </span>  |
 |                                                                         |
 +-------------------------------------------------------------------------+
-| [SYSTEM_LOG]                                                            |
-| <span id="status-log">> AUTHENTICATING SOVEREIGN NODE...
+| [TERMINAL_LOG]                                                          |
+| <div id="status-log-container" style="height: 150px; overflow-y: auto;"><span id="status-log">> AUTHENTICATING SOVEREIGN NODE...
 > SIGNAL STRENGTH: OPTIMAL
-> BAR_STATUS: OPEN</span>                                               |
+> BAR_STATUS: OPEN</span></div>                                               |
 +-------------------------------------------------------------------------+
 | [ACTIVE_UNITS]                                                          |
 | <span id="unit-list">> _awaiting_signal...</span>                                                   |
@@ -49,7 +49,9 @@
 |               </select>                                                 |
 |                                                                         |
 |  MASTER_VOL:  [<input type="range" id="master-vol" min="0" max="100" value="50">] |
-|  VOICE_MIX:   [<input type="range" id="voice-vol" min="0" max="100" value="50">]  |
+|                                                                         |
+|  DIAL_UNIT:   [<input type="text" id="dial-id" placeholder="UNIT_ID">] <button id="dial-btn">CONNECT</button> |
+|  MESSAGE:     [<input type="text" id="chat-input" placeholder="ENTER_COMMS..." style="width: 300px;">] |
 |                                                                         |
 +-------------------------------------------------------------------------+
 | [AUDIO_ENGINE]                                                          |
@@ -58,7 +60,6 @@
 |  STATUS: <span id="playback-status">SIGNAL: SILENT</span>                                          |
 |  PEER_ID: <span id="peer-display" class="accent">SCANNING...</span>                                     |
 |                                                                         |
-|  DIAL_UNIT: [<input type="text" id="dial-id" placeholder="UNIT_ID">] <button id="dial-btn">CALL</button> |
 +-------------------------------------------------------------------------+
 </pre>
 
