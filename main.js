@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateLog(`MIC_CAPTURED // PIRATE_PROTOCOL: ON`);
 
             // LINK TO SOVEREIGN OWNCAST SIGNAL
-            // Replace with your actual tunnel URL when live (e.g., https://live.pushinn.app/hls/stream.m3u8)
+            // Replace with your actual independent signal URL when live (e.g., https://live.btek.fm/hls/stream.m3u8)
             const streamUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; 
             
             ambientLoop.src = streamUrl;
