@@ -1,6 +1,6 @@
 /**
  * 📡 BTEK.FM // PROJECT SPEAKEASY
- * FUNCTIONAL CORE V.03 // PURE TERMINAL
+ * FUNCTIONAL CORE V.03 // SOVEREIGN STREAM EDITION
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const unitCount = document.getElementById('unit-count');
     
     const ambientLoop = document.getElementById('ambient-loop');
+    const masterVol = document.getElementById('master-vol');
     
     const dialIdInput = document.getElementById('dial-id');
     const dialBtn = document.getElementById('dial-btn');
@@ -65,13 +66,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. AUDIO LOGIC ---
+    // --- 2. AUDIO LOGIC (SOVEREIGN STREAM) ---
     async function igniteSignal() {
         try {
             localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
             updateLog(`MIC_CAPTURED // PIRATE_PROTOCOL: ON`);
 
-            ambientLoop.volume = 0.5;
+            // LINK TO SOVEREIGN OWNCAST SIGNAL
+            // Replace with your actual tunnel URL when live (e.g., https://live.pushinn.app/hls/stream.m3u8)
+            const streamUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; 
+            
+            ambientLoop.src = streamUrl;
+            ambientLoop.volume = masterVol.value / 100;
             ambientLoop.play();
             
             isSignalActive = true;
@@ -80,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             playbackStatus.textContent = 'ACTIVE';
             playbackStatus.classList.remove('red');
             playbackStatus.classList.add('gold');
-            updateLog(`AMBIENT_SYNC: COMPLETE`);
+            updateLog(`SOVEREIGN_SIGNAL_SYNCED: SUCCESS`);
             
             if(!peer) initPeer();
         } catch (err) {
@@ -162,10 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateLog(`VOICE_SYNCED: ${call.peer}`);
             connectedPeers.add(call.peer);
             updateUnitCount();
-        });
-        
-        call.on('close', () => {
-             updateLog(`VOICE_LINK_LOST: ${call.peer}`);
         });
     }
 });
